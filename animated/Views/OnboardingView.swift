@@ -11,24 +11,25 @@ import RiveRuntime
 struct OnboardingView: View {
     let button = RiveViewModel(fileName: "button")
     @State var showModal = false
+    @Binding var show: Bool
+    
     var body: some View {
-        ZStack{
-            // MARK: Background shapes
+        ZStack {
             background
             
-            // MARK: Body
             content
                 .offset(y: showModal ? -50 : 0)
             
-            Color("Shadow").opacity(showModal ? 0.4 : 0).ignoresSafeArea()
+            Color("Shadow")
+                .opacity(showModal ? 0.4 : 0)
+                .ignoresSafeArea()
             
-            // MARK: Modal
             if showModal {
                 SignInView(showModal: $showModal)
                     .transition(.move(edge: .top).combined(with: .opacity))
                     .overlay(
                         Button {
-                            withAnimation(.spring()){
+                            withAnimation(.spring()) {
                                 showModal = false
                             }
                         } label: {
@@ -43,8 +44,25 @@ struct OnboardingView: View {
                     )
                     .zIndex(1)
             }
+            
+            Button {
+                withAnimation {
+                    show = false
+                }
+            } label: {
+                Image(systemName: "xmark")
+                    .frame(width: 36, height: 36)
+                    .background(.black)
+                    .foregroundColor(.white)
+                    .mask(Circle())
+                    .shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: 10)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+            .padding(20)
+            .offset(y: showModal ? -200 : 80)
         }
     }
+
     
     var content: some View {
 
@@ -99,12 +117,12 @@ struct OnboardingView: View {
                 Image("Spline")
                     .blur(radius: 50)
                     .offset(x: 200, y: 100)
-            )
+        )
     }
 }
 
 struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {
-        OnboardingView()
+        OnboardingView(show: .constant(true))
     }
 }
